@@ -1,18 +1,13 @@
 import { Context, Schema } from 'koishi';
-export declare const name = "douyin-parsing-fork";
-export declare const usage = "\uD83D\uDCC8 Fork自: koishi-plugin-douyin-parsing by ixbai";
+export declare const name: string;
+export declare const usage: string;
+
 export interface Config {
-    allowedGuilds: string[];
-    enablePrivateChat: boolean;
-    sendVideoAsLink: boolean;
-    maxVideoSize: number;
-    debug: boolean;
-    filterHashtags: boolean;
-    duplicateInterval: number;
-    showWaitingMessage: boolean;
-    enableMergeForward: boolean;
-    mergeForwardDelay: number;
-    mergeForwardMaxCount: number;
+  enableMergeForward: boolean;
+  mergeDelay: number;
+  maxMergeCount: number;
+  debug: boolean;
 }
-export declare const Config: Schema<Config>;
-export declare function apply(ctx: Context, config: Config): void;
+
+export declare const Config: import("koishi").Schema<Config>;
+export declare function apply(ctx: import("koishi").Context, config: Config): void;
