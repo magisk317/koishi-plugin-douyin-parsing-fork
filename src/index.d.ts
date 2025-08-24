@@ -7,6 +7,11 @@ export interface Config {
   mergeDelay: number;
   maxMergeCount: number;
   debug: boolean;
+  // 新增配置项
+  isSendVideo: boolean;
+  isCache: boolean;
+  maxDuration: number;
+  maxSize: number;
 }
 
 export declare const Config: import("koishi").Schema<Config>;
