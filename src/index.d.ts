@@ -10,6 +10,9 @@ export interface Config {
     filterHashtags: boolean;
     duplicateInterval: number;
     showWaitingMessage: boolean;
+    enableMergeForward: boolean;
+    mergeForwardDelay: number;
+    mergeForwardMaxCount: number;
 }
 export declare const Config: Schema<Config>;
 export declare function apply(ctx: Context, config: Config): void;

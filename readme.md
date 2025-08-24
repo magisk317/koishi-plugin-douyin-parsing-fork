@@ -22,6 +22,7 @@
 - 📏 智能文件大小检测
 - 🏷️ 话题标签过滤
 - 🐛 完善的错误处理
+- 📱 **合并转发功能** - 智能合并多个视频链接，减少消息刷屏
 
 ## 🚀 安装使用
 
@@ -50,7 +51,13 @@ export default {
       // 防重复处理间隔时间（秒），0表示关闭此功能
       duplicateInterval: 60,
       // 是否发送等待提示语，让用户知道正在处理中
-      showWaitingMessage: false
+      showWaitingMessage: false,
+      // 是否启用合并转发功能
+      enableMergeForward: false,
+      // 合并转发延迟时间（毫秒）
+      mergeForwardDelay: 1000,
+      // 合并转发最大消息数量
+      mergeForwardMaxCount: 5
     }
   }
 }
@@ -63,7 +70,3 @@ export default {
 ## 📄 许可证
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
-
-## 🙏 致谢
-
-感谢原项目作者 [ixbai](https://github.com/ixbai) 的开源贡献！

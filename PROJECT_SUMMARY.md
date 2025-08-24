@@ -69,6 +69,7 @@ koishi-plugin-douyin-parsing-fork/
 - 📏 智能文件大小检测
 - 🏷️ 话题标签过滤
 - 🐛 完善的错误处理
+- 📱 合并转发功能
 
 ## 📦 发布信息
 
@@ -103,6 +104,9 @@ koishi-plugin-douyin-parsing-fork/
 | `filterHashtags` | `boolean` | `true` | 是否过滤话题标签 |
 | `duplicateInterval` | `number` | `60` | 防重复间隔(秒) |
 | `showWaitingMessage` | `boolean` | `false` | 是否显示等待提示 |
+| `enableMergeForward` | `boolean` | `false` | 是否启用合并转发功能 |
+| `mergeForwardDelay` | `number` | `1000` | 合并转发延迟时间(毫秒) |
+| `mergeForwardMaxCount` | `number` | `5` | 合并转发最大消息数量 |
 
 ## 🎯 使用场景
 
