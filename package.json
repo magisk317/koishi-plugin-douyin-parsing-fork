@@ -25,9 +25,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/koishi-plugin-douyin-parsing-fork.git"
+    "url": "https://github.com/magisk317/koishi-plugin-douyin-parsing-fork.git"
   },
-  "author": "Original: ixbai, Fork: your-username",
+  "author": "Original: ixbai, Fork: magisk317",
   "devDependencies": {
     "@types/node": "^18.0.0",
     "typescript": "^5.0.0",
