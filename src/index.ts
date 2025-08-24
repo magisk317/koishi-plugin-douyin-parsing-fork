@@ -2,13 +2,7 @@ import { Context, Schema, h } from 'koishi';
 
 export const name = 'douyin-parsing-fork';
 
-export const usage = `📢 官方交流群：767723753
-
-欢迎加入官方QQ群交流技术、反馈问题和获取最新更新信息！
-
-🔗 快速加入：https://qm.qq.com/q/tcTUHy0bm0
-
-📈 Fork自: koishi-plugin-douyin-parsing by ixbai`;
+export const usage = `📈 Fork自: koishi-plugin-douyin-parsing by ixbai`;
 
 export interface Config {
   allowedGuilds: string[];
@@ -76,15 +70,16 @@ export function apply(ctx: Context, config: Config) {
       }));
 
       // 发送合并转发
-      await session.send(h('message', [
-        h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
+      const messageContent = [
+        `📱 抖音视频合集 (${forwardMessages.length}个视频)`,
         ...forwardMessages.map((msg, index) => [
-          h('text', `\n${index + 1}. ${msg.title}\n`),
-          h('text', `   作者: ${msg.author}\n`),
+          `\n${index + 1}. ${msg.title}`,
+          `   作者: ${msg.author}`,
           h('image', { src: msg.coverUrl }),
-          h('text', `\n   视频链接: ${msg.videoUrl}\n`)
+          `   视频链接: ${msg.videoUrl}`
         ]).flat()
-      ]));
+      ];
+      await session.send(messageContent);
 
       if (config.debug) {
         ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
