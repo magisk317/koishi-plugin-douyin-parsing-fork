@@ -1,0 +1,45 @@
+{
+  "name": "koishi-plugin-douyin-parsing-fork",
+  "description": "解析抖音链接，支持直接发送视频（无需自行配置API）- Fork版本",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf lib dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "license": "MIT",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin",
+    "douyin",
+    "video-parsing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/koishi-plugin-douyin-parsing-fork.git"
+  },
+  "author": "Original: ixbai, Fork: your-username",
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "peerDependencies": {
+    "koishi": "^4.18.7"
+  },
+  "koishi": {
+    "service": {
+      "required": [
+        "http"
+      ]
+    }
+  }
+}
