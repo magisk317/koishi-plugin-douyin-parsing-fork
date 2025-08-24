@@ -4,10 +4,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build outputs
-lib/
-dist/
+# Build outputs (这些文件会被发布到npm)
+# lib/ - 保留，这是TypeScript编译后的JavaScript文件
+# dist/ - 保留，这是构建输出目录
 *.tsbuildinfo
+
+# Source files (不发布到npm)
+src/
+*.ts
+*.tsx
 
 # Environment variables
 .env
@@ -56,3 +61,14 @@ jspm_packages/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# GitHub Actions (不发布到npm)
+.github/
+
+# Documentation files (不发布到npm)
+*.md
+!readme.md
+
+# Configuration files (不发布到npm)
+tsconfig.json
+.gitignore

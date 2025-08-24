@@ -6,7 +6,8 @@
   "typings": "lib/index.d.ts",
   "files": [
     "lib",
-    "dist"
+    "readme.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
