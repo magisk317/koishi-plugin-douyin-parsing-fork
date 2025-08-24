@@ -69,17 +69,21 @@ export function apply(ctx: Context, config: Config) {
         videoUrl: msg.videoUrl
       }));
 
-      // 发送合并转发
-      const messageContent = [
-        `📱 抖音视频合集 (${forwardMessages.length}个视频)`,
-        ...forwardMessages.map((msg, index) => [
-          `\n${index + 1}. ${msg.title}`,
-          `   作者: ${msg.author}`,
-          h('image', { src: msg.coverUrl }),
-          `   视频链接: ${msg.videoUrl}`
-        ]).flat()
+      // 发送合并转发 - 使用h.forward来真正合并消息
+      const forwardElements = forwardMessages.map((msg, index) => [
+        h('text', `${index + 1}. ${msg.title}`),
+        h('text', `   作者: ${msg.author}`),
+        h('image', { src: msg.coverUrl }),
+        h('text', `   视频链接: ${msg.videoUrl}`)
+      ]).flat();
+      
+      // 创建合并转发的消息结构
+      const forwardMessage = [
+        h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
+        ...forwardElements
       ];
-      await session.send(messageContent);
+      
+      await session.send(forwardMessage);
 
       if (config.debug) {
         ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
@@ -88,20 +92,24 @@ export function apply(ctx: Context, config: Config) {
       if (config.debug) {
         ctx.logger.error(`合并转发发送失败: ${error}`);
       }
-      // 降级为单独发送
-      for (const msg of messages) {
-        try {
-          const singleMessage = [
-            h.image(msg.coverUrl),
-            `标题：${msg.title}`,
-            `作者：${msg.author}`,
-            `视频链接：${msg.videoUrl}`
-          ].join('\n');
-          await session.send(singleMessage);
-        } catch (sendError) {
-          if (config.debug) {
-            ctx.logger.error(`单独发送失败: ${sendError}`);
-          }
+      // 降级为合并发送（即使失败也要保持合并格式）
+      try {
+        const fallbackElements = messages.map((msg, index) => [
+          h('text', `${index + 1}. ${msg.title}`),
+          h('text', `   作者: ${msg.author}`),
+          h('image', { src: msg.coverUrl }),
+          h('text', `   视频链接: ${msg.videoUrl}`)
+        ]).flat();
+        
+        const fallbackMessage = [
+          h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
+          ...fallbackElements
+        ];
+        
+        await session.send(fallbackMessage);
+      } catch (fallbackError) {
+        if (config.debug) {
+          ctx.logger.error(`降级发送也失败: ${fallbackError}`);
         }
       }
     }
@@ -330,6 +338,7 @@ export function apply(ctx: Context, config: Config) {
               if (config.debug) {
                 ctx.logger.info(`视频已添加到合并转发队列，会话ID: ${sessionId}`);
               }
+              // 当启用合并转发时，不发送任何单独消息，等待合并完成
             }
           } else {
             await session.send('抖音链接解析失败');
