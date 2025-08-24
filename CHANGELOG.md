@@ -22,7 +22,6 @@
 
 ### 致谢
 - 基于 [koishi-plugin-douyin-parsing](https://www.npmjs.com/package/koishi-plugin-douyin-parsing) 项目
-- 原项目作者: [ixbai](https://github.com/ixbai)
 
 ---
 

@@ -8,7 +8,7 @@
 
 这是一个基于 [koishi-plugin-douyin-parsing](https://www.npmjs.com/package/koishi-plugin-douyin-parsing) 的Fork版本。
 
-**原始项目**: [koishi-plugin-douyin-parsing](https://www.npmjs.com/package/koishi-plugin-douyin-parsing) by [ixbai](https://github.com/ixbai)
+**原始项目**: [koishi-plugin-douyin-parsing](https://www.npmjs.com/package/koishi-plugin-douyin-parsing)
 
 **Fork版本**: 保持原项目功能的同时，进行了优化和改进。
 
