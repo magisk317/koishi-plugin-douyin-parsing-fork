@@ -2,7 +2,20 @@ import { Context, Schema, h } from 'koishi';
 
 export const name = 'douyin-parsing-fork';
 
-export const usage = `📈 Fork自: koishi-plugin-douyin-parsing by ixbai`;
+export const usage = `📈 Fork自: koishi-plugin-douyin-parsing by ixbai
+
+## 📋 插件说明
+这是一个基于 koishi-plugin-douyin-parsing 的Fork版本，支持抖音链接自动解析和合并转发功能。
+
+## 🔗 相关链接
+- **原始项目**: [koishi-plugin-douyin-parsing](https://www.npmjs.com/package/koishi-plugin-douyin-parsing)
+- **Fork版本**: 保持原项目功能的同时，进行了优化和改进
+
+## ✨ 主要功能
+- 🔗 自动解析抖音分享链接
+- 🎥 支持直接发送视频文件
+- 📱 合并转发功能 - 智能合并多个视频链接
+- ⚙️ 丰富的配置选项`;
 
 export interface Config {
   allowedGuilds: string[];
@@ -69,7 +82,7 @@ export function apply(ctx: Context, config: Config) {
         videoUrl: msg.videoUrl
       }));
 
-      // 发送合并转发 - 使用h.figure来真正合并消息
+      // 发送合并转发 - 使用更兼容的方式
       const forwardElements = forwardMessages.map((msg, index) => [
         h('text', `${index + 1}. ${msg.title}`),
         h('text', `   作者: ${msg.author}`),
@@ -77,15 +90,13 @@ export function apply(ctx: Context, config: Config) {
         h('text', `   视频链接: ${msg.videoUrl}`)
       ]).flat();
       
-      // 创建合并转发的消息结构 - 使用figure元素
-      const figureContent = h('figure', {
-        children: [
-          h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
-          ...forwardElements
-        ]
-      });
+      // 创建合并转发的消息结构 - 直接发送元素数组
+      const messageContent = [
+        h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
+        ...forwardElements
+      ];
       
-      await session.send(figureContent);
+      await session.send(messageContent);
 
       if (config.debug) {
         ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
@@ -103,15 +114,13 @@ export function apply(ctx: Context, config: Config) {
           h('text', `   视频链接: ${msg.videoUrl}`)
         ]).flat();
         
-        // 使用figure元素创建降级合并消息
-        const fallbackFigure = h('figure', {
-          children: [
-            h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
-            ...fallbackElements
-          ]
-        });
+        // 使用更兼容的方式创建降级合并消息
+        const fallbackMessage = [
+          h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
+          ...fallbackElements
+        ];
         
-        await session.send(fallbackFigure);
+        await session.send(fallbackMessage);
       } catch (fallbackError) {
         if (config.debug) {
           ctx.logger.error(`降级发送也失败: ${fallbackError}`);
