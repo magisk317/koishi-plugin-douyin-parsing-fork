@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-douyin-parsing-fork",
   "description": "解析抖音链接，支持直接发送视频（无需自行配置API）- Fork版本",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
