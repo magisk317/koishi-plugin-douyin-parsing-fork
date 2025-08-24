@@ -62,8 +62,8 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# GitHub Actions (不发布到npm)
-.github/
+# GitHub Actions (需要保留在仓库中)
+# .github/
 
 # Documentation files (不发布到npm)
 *.md
