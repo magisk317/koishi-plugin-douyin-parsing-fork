@@ -62,7 +62,7 @@ export function apply(ctx: Context, config: Config) {
     session: any;
   }>();
 
-  // 合并转发处理函数
+  // 合并转发处理函数 - 参考哔哩哔哩插件的实现
   const processMergeForward = async (sessionId: string) => {
     const cache = mergeForwardCache.get(sessionId);
     if (!cache || cache.messages.length === 0) return;
@@ -74,24 +74,20 @@ export function apply(ctx: Context, config: Config) {
     }
 
     try {
-      // 创建合并转发消息
-      const forwardMessages = messages.map(msg => ({
-        title: msg.title,
-        author: msg.author,
-        coverUrl: msg.coverUrl,
-        videoUrl: msg.videoUrl
-      }));
-
-      // 准备发送的所有元素
-      const allElements = [
-        h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
-        ...forwardMessages.map((msg, index) => [
-          h('text', `${index + 1}. ${msg.title}`),
-          h('text', `   作者: ${msg.author}`),
-          h('image', { src: msg.coverUrl }),
-          h('text', `   视频链接: ${msg.videoUrl}`)
-        ]).flat()
-      ];
+      // 准备发送的所有元素 - 使用更简单的方式
+      const allElements = [];
+      
+      // 添加标题
+      allElements.push(h('text', `📱 抖音视频合集 (${messages.length}个视频)\n`));
+      
+      // 添加每个视频的信息
+      for (let i = 0; i < messages.length; i++) {
+        const msg = messages[i];
+        allElements.push(h('text', `${i + 1}. ${msg.title}`));
+        allElements.push(h('text', `   作者: ${msg.author}`));
+        allElements.push(h('image', { src: msg.coverUrl }));
+        allElements.push(h('text', `   视频链接: ${msg.videoUrl}`));
+      }
 
       // 合并转发处理 - 参考哔哩哔哩插件的实现
       if (session.platform === "onebot" || session.platform === "red") {
@@ -114,7 +110,7 @@ export function apply(ctx: Context, config: Config) {
       }
 
       if (config.debug) {
-        ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
+        ctx.logger.info(`合并转发发送成功，包含 ${messages.length} 个视频`);
       }
     } catch (error) {
       if (config.debug) {
@@ -122,31 +118,27 @@ export function apply(ctx: Context, config: Config) {
       }
       // 降级为合并发送（即使失败也要保持合并格式）
       try {
-        const fallbackElements = messages.map((msg, index) => [
-          h('text', `${index + 1}. ${msg.title}`),
-          h('text', `   作者: ${msg.author}`),
-          h('image', { src: msg.coverUrl }),
-          h('text', `   视频链接: ${msg.videoUrl}`)
-        ]).flat();
+        if (config.debug) {
+          ctx.logger.info(`尝试降级发送...`);
+        }
         
-        // 准备降级发送的所有元素
-        const allFallbackElements = [
-          h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
-          ...fallbackElements
-        ];
+        // 降级时直接按顺序发送，不使用figure
+        const fallbackElements = [];
+        fallbackElements.push(h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`));
+        
+        for (let i = 0; i < messages.length; i++) {
+          const msg = messages[i];
+          fallbackElements.push(h('text', `${i + 1}. ${msg.title}`));
+          fallbackElements.push(h('text', `   作者: ${msg.author}`));
+          fallbackElements.push(h('image', { src: msg.coverUrl }));
+          fallbackElements.push(h('text', `   视频链接: ${msg.videoUrl}`));
+        }
 
-        // 降级合并转发处理
-        if (session.platform === "onebot" || session.platform === "red") {
-          // 创建 figure 元素
-          const fallbackFigure = h('figure', {
-            children: allFallbackElements
-          });
-          await session.send(fallbackFigure);
-        } else {
-          // 其他平台按顺序发送所有元素
-          for (const element of allFallbackElements) {
-            await session.send(element);
-          }
+        // 降级时直接发送元素数组，不使用figure
+        await session.send(fallbackElements);
+        
+        if (config.debug) {
+          ctx.logger.info(`降级发送成功`);
         }
       } catch (fallbackError) {
         if (config.debug) {
