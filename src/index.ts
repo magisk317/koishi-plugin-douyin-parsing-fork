@@ -82,21 +82,36 @@ export function apply(ctx: Context, config: Config) {
         videoUrl: msg.videoUrl
       }));
 
-      // 发送合并转发 - 使用更兼容的方式
-      const forwardElements = forwardMessages.map((msg, index) => [
-        h('text', `${index + 1}. ${msg.title}`),
-        h('text', `   作者: ${msg.author}`),
-        h('image', { src: msg.coverUrl }),
-        h('text', `   视频链接: ${msg.videoUrl}`)
-      ]).flat();
-      
-      // 创建合并转发的消息结构 - 直接发送元素数组
-      const messageContent = [
+      // 准备发送的所有元素
+      const allElements = [
         h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
-        ...forwardElements
+        ...forwardMessages.map((msg, index) => [
+          h('text', `${index + 1}. ${msg.title}`),
+          h('text', `   作者: ${msg.author}`),
+          h('image', { src: msg.coverUrl }),
+          h('text', `   视频链接: ${msg.videoUrl}`)
+        ]).flat()
       ];
-      
-      await session.send(messageContent);
+
+      // 合并转发处理 - 参考哔哩哔哩插件的实现
+      if (session.platform === "onebot" || session.platform === "red") {
+        if (config.debug) {
+          ctx.logger.info(`使用合并转发，正在合并消息。`);
+        }
+
+        // 创建 figure 元素
+        const figureContent = h('figure', {
+          children: allElements
+        });
+
+        // 发送合并转发消息
+        await session.send(figureContent);
+      } else {
+        // 其他平台按顺序发送所有元素
+        for (const element of allElements) {
+          await session.send(element);
+        }
+      }
 
       if (config.debug) {
         ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
@@ -114,13 +129,25 @@ export function apply(ctx: Context, config: Config) {
           h('text', `   视频链接: ${msg.videoUrl}`)
         ]).flat();
         
-        // 使用更兼容的方式创建降级合并消息
-        const fallbackMessage = [
+        // 准备降级发送的所有元素
+        const allFallbackElements = [
           h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
           ...fallbackElements
         ];
-        
-        await session.send(fallbackMessage);
+
+        // 降级合并转发处理
+        if (session.platform === "onebot" || session.platform === "red") {
+          // 创建 figure 元素
+          const fallbackFigure = h('figure', {
+            children: allFallbackElements
+          });
+          await session.send(fallbackFigure);
+        } else {
+          // 其他平台按顺序发送所有元素
+          for (const element of allFallbackElements) {
+            await session.send(element);
+          }
+        }
       } catch (fallbackError) {
         if (config.debug) {
           ctx.logger.error(`降级发送也失败: ${fallbackError}`);
