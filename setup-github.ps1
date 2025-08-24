@@ -88,4 +88,4 @@ Write-Host "3. 检查 npm 包是否发布成功" -ForegroundColor White
 Write-Host ""
 Write-Host "📖 详细说明请查看: GITHUB_SETUP_DETAILED.md" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "🔗 仓库地址: $remoteUrl" -ForegroundColor Blue
+Write-Host "Repository URL: $remoteUrl" -ForegroundColor Blue
