@@ -69,7 +69,7 @@ export function apply(ctx: Context, config: Config) {
         videoUrl: msg.videoUrl
       }));
 
-      // 发送合并转发 - 使用h.forward来真正合并消息
+      // 发送合并转发 - 使用h.figure来真正合并消息
       const forwardElements = forwardMessages.map((msg, index) => [
         h('text', `${index + 1}. ${msg.title}`),
         h('text', `   作者: ${msg.author}`),
@@ -77,13 +77,15 @@ export function apply(ctx: Context, config: Config) {
         h('text', `   视频链接: ${msg.videoUrl}`)
       ]).flat();
       
-      // 创建合并转发的消息结构
-      const forwardMessage = [
-        h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
-        ...forwardElements
-      ];
+      // 创建合并转发的消息结构 - 使用figure元素
+      const figureContent = h('figure', {
+        children: [
+          h('text', `📱 抖音视频合集 (${forwardMessages.length}个视频)\n`),
+          ...forwardElements
+        ]
+      });
       
-      await session.send(forwardMessage);
+      await session.send(figureContent);
 
       if (config.debug) {
         ctx.logger.info(`合并转发发送成功，包含 ${forwardMessages.length} 个视频`);
@@ -101,12 +103,15 @@ export function apply(ctx: Context, config: Config) {
           h('text', `   视频链接: ${msg.videoUrl}`)
         ]).flat();
         
-        const fallbackMessage = [
-          h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
-          ...fallbackElements
-        ];
+        // 使用figure元素创建降级合并消息
+        const fallbackFigure = h('figure', {
+          children: [
+            h('text', `📱 抖音视频合集 (${messages.length}个视频) - 降级模式\n`),
+            ...fallbackElements
+          ]
+        });
         
-        await session.send(fallbackMessage);
+        await session.send(fallbackFigure);
       } catch (fallbackError) {
         if (config.debug) {
           ctx.logger.error(`降级发送也失败: ${fallbackError}`);
